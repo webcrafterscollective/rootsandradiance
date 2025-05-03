@@ -1,0 +1,123 @@
+/* src/index.css */
+
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- First Base Layer (General Defaults) --- */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    @apply h-full scroll-smooth;
+  }
+
+  body {
+    /* --- Use Theme Colors --- */
+    @apply font-sans text-base text-brand-foreground bg-brand-background h-full; /* Base text & BG from theme */
+  }
+
+  /* --- Headings --- */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-brand-heading; /* Uses the color defined in tailwind.config.js */
+  }
+
+  /* --- Links --- */
+  /* Corrected: Use base name for apply */
+  a {
+    @apply text-brand-primary hover:text-brand-primary-hover transition-colors duration-200;
+  }
+
+  /* --- Forms --- */
+  /* Corrected: Use base name for apply */
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='number'],
+  select,
+  textarea {
+     /* --- Use Theme Colors --- */
+    @apply block w-full px-3 py-2 border border-brand-subtle rounded-md shadow-sm bg-white
+           placeholder-gray-400
+           focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm /* Use base name for focus ring/border */
+           disabled:opacity-50 disabled:bg-gray-100;
+  }
+
+  /* --- Buttons (Base Style) --- */
+  /* Corrected: Use base name for apply */
+  button {
+     /* Use base name for focus ring */
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary;
+  }
+
+  /* --- Shimmer Animation (Remains the same) --- */
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+  .animate-pulse {
+     /* Use subtle theme colors for shimmer */
+    background-image: linear-gradient(to right, theme('colors.brand-subtle/50') 8%, theme('colors.brand-subtle/30') 18%, theme('colors.brand-subtle/50') 33%);
+    background-size: 2000px 100%;
+    animation: shimmer 1.5s linear infinite forwards;
+  }
+
+  /* --- Prose adjustments (optional) --- */
+  /* Corrected: Use base name for apply */
+  .prose {
+     /* Use theme text color for prose */
+     @apply text-brand-foreground;
+  }
+  .prose :where(a):not(:where([class~="not-prose"] *)) {
+      /* Use base name for prose links */
+      @apply text-brand-primary hover:text-brand-primary-hover;
+  }
+   .prose :where(strong):not(:where([class~="not-prose"] *)) {
+       @apply text-brand-heading;
+   }
+    /* Add other prose adjustments if needed */
+} /* End of first base layer */
+
+
+/* --- Custom Slick Carousel Dot Styling (Use Theme Primary DEFAULT) --- */
+/* This part remains correct as it uses theme() */
+.slick-dots li button:before {
+  content: none;
+}
+.slick-dots li {
+  margin: 0 4px !important;
+  width: 10px !important;
+  height: 10px !important;
+}
+.slick-dots li button div {
+  width: 10px !important;
+  height: 10px !important;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+  border-radius: 50%; /* Ensure dots are round */
+}
+.slick-dots li .slick-dot-inactive {
+   opacity: 0.4;
+   /* Use a subtle theme color for inactive */
+   background-color: theme('colors.brand-foreground / 50%');
+}
+.slick-dots li.slick-active button div.slick-dot-inactive {
+  /* --- Use Primary Color DEFAULT shade for active dot --- */
+  background-color: theme('colors.brand-primary.DEFAULT') !important; /* Correct use of theme() */
+  opacity: 1;
+}
+
+
+/* --- Ensure root and body take full height for flex layout --- */
+#root, body, html {
+    height: 100%;
+}
+#root > div { /* Target the main div inside App.jsx */
+     min-height: 100%;
+}
+
+
+/* --- Remove the duplicated @layer base from previous response --- */
+/* No need for a second @layer base here */
