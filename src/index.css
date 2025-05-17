@@ -1,13 +1,10 @@
 /* src/index.css */
-
-/* Import Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* --- First Base Layer (General Defaults) --- */
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
@@ -16,108 +13,91 @@
   }
 
   body {
-    /* --- Use Theme Colors --- */
-    @apply font-sans text-base text-brand-foreground bg-brand-background h-full; /* Base text & BG from theme */
+    @apply font-sans text-base text-brand-foreground bg-brand-background h-full;
   }
 
-  /* --- Headings --- */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-brand-heading; /* Uses the color defined in tailwind.config.js */
+    @apply font-semibold text-brand-heading;
   }
 
-  /* --- Links --- */
-  /* Corrected: Use base name for apply */
-  a {
-    @apply text-brand-primary hover:text-brand-primary-hover transition-colors duration-200;
+  a:not([class*="button"]) {
+    @apply text-brand-primary-light hover:text-brand-primary transition-colors duration-200;
   }
 
-  /* --- Forms --- */
-  /* Corrected: Use base name for apply */
+  hr, .divider {
+    @apply border-brand-subtle; /* This uses the DEFAULT key from the 'subtle' object correctly for border utility */
+  }
+
   input[type='text'],
   input[type='email'],
   input[type='password'],
   input[type='number'],
   select,
   textarea {
-     /* --- Use Theme Colors --- */
-    @apply block w-full px-3 py-2 border border-brand-subtle rounded-md shadow-sm bg-white
-           placeholder-gray-400
-           focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm /* Use base name for focus ring/border */
-           disabled:opacity-50 disabled:bg-gray-100;
+    @apply block w-full px-3 py-2 border border-brand-subtle rounded-md shadow-sm
+           bg-brand-card text-brand-foreground
+           placeholder-gray-500
+           focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary sm:text-sm
+           disabled:opacity-60 disabled:bg-brand-subtle disabled:text-gray-500 disabled:cursor-not-allowed;
   }
 
-  /* --- Buttons (Base Style) --- */
-  /* Corrected: Use base name for apply */
-  button {
-     /* Use base name for focus ring */
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary;
+  .on-light-section input, .on-light-section select, .on-light-section textarea {
+    @apply bg-white border-brand-subtle-light text-brand-text-dark placeholder-gray-400;
   }
 
-  /* --- Shimmer Animation (Remains the same) --- */
+  button, .button {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary focus:ring-offset-brand-background;
+  }
+
+  /* Shimmer Animation for Dark Theme */
   @keyframes shimmer {
     0% { background-position: -1000px 0; }
     100% { background-position: 1000px 0; }
   }
   .animate-pulse {
-     /* Use subtle theme colors for shimmer */
-    background-image: linear-gradient(to right, theme('colors.brand-subtle/50') 8%, theme('colors.brand-subtle/30') 18%, theme('colors.brand-subtle/50') 33%);
+    /* CORRECTED: Explicitly use .DEFAULT for the 'subtle' color object within theme() */
+    background-image: linear-gradient(to right, theme('colors.brand.subtle.DEFAULT') 8%, theme('colors.brand.card') 18%, theme('colors.brand.subtle.DEFAULT') 33%);
     background-size: 2000px 100%;
     animation: shimmer 1.5s linear infinite forwards;
   }
 
-  /* --- Prose adjustments (optional) --- */
-  /* Corrected: Use base name for apply */
+  /* Default Prose Theme for Dark Backgrounds (using @tailwindcss/typography) */
   .prose {
-     /* Use theme text color for prose */
      @apply text-brand-foreground;
   }
-  .prose :where(a):not(:where([class~="not-prose"] *)) {
-      /* Use base name for prose links */
-      @apply text-brand-primary hover:text-brand-primary-hover;
-  }
-   .prose :where(strong):not(:where([class~="not-prose"] *)) {
-       @apply text-brand-heading;
-   }
-    /* Add other prose adjustments if needed */
-} /* End of first base layer */
+  .prose :where(a):not(:where([class~="not-prose"] *)) { @apply text-brand-primary hover:text-brand-primary-hover no-underline hover:underline; }
+  .prose :where(strong):not(:where([class~="not-prose"] *)) { @apply text-brand-primary-light; }
+  .prose :where(h1,h2,h3,h4,h5,h6):not(:where([class~="not-prose"] *)) { @apply text-brand-heading; }
+  .prose :where(blockquote):not(:where([class~="not-prose"] *)) { @apply border-l-brand-primary text-brand-primary-light; }
+  .prose :where(code):not(:where([class~="not-prose"] *)) { @apply text-brand-primary-light bg-brand-subtle p-1 rounded-sm text-sm; }
+  .prose :where(hr):not(:where([class~="not-prose"] *)) { @apply border-brand-subtle; }
 
+  /* Specific Theme for Prose on Light Backgrounds */
+  .prose-on-light { @apply text-brand-text-dark; }
+  .prose-on-light :where(a):not(:where([class~="not-prose"] *)) { @apply text-brand-primary hover:text-brand-primary-hover; }
+  .prose-on-light :where(strong):not(:where([class~="not-prose"] *)) { @apply text-brand-primary; }
+  .prose-on-light :where(h1,h2,h3,h4,h5,h6):not(:where([class~="not-prose"] *)) { @apply text-brand-text-dark; }
+  .prose-on-light :where(blockquote):not(:where([class~="not-prose"] *)) { @apply border-l-brand-primary text-brand-text-dark opacity-80; }
+  .prose-on-light :where(code):not(:where([class~="not-prose"] *)) { @apply text-brand-primary bg-brand-primary/10 p-1 rounded-sm text-sm; }
+  .prose-on-light :where(hr):not(:where([class~="not-prose"] *)) { @apply border-brand-subtle-light; }
+}
 
-/* --- Custom Slick Carousel Dot Styling (Use Theme Primary DEFAULT) --- */
-/* This part remains correct as it uses theme() */
-.slick-dots li button:before {
-  content: none;
-}
-.slick-dots li {
-  margin: 0 4px !important;
-  width: 10px !important;
-  height: 10px !important;
-}
-.slick-dots li button div {
-  width: 10px !important;
-  height: 10px !important;
-  transition: background-color 0.3s ease, opacity 0.3s ease;
-  border-radius: 50%; /* Ensure dots are round */
-}
-.slick-dots li .slick-dot-inactive {
-   opacity: 0.4;
-   /* Use a subtle theme color for inactive */
-   background-color: theme('colors.brand-foreground / 50%');
+/* Slick Carousel Dots */
+.slick-dots li button:before { content: none; }
+.slick-dots li { margin: 0 4px !important; width: 10px !important; height: 10px !important; }
+.slick-dots li button div.slick-dot-inactive {
+  width: 10px !important; height: 10px !important; transition: background-color 0.3s ease, opacity 0.3s ease; border-radius: 50%;
+  opacity: 0.5; background-color: theme('colors.brand.primary.light');
 }
 .slick-dots li.slick-active button div.slick-dot-inactive {
-  /* --- Use Primary Color DEFAULT shade for active dot --- */
-  background-color: theme('colors.brand-primary.DEFAULT') !important; /* Correct use of theme() */
-  opacity: 1;
+  background-color: theme('colors.brand.primary.DEFAULT') !important; opacity: 1;
 }
 
-
-/* --- Ensure root and body take full height for flex layout --- */
-#root, body, html {
-    height: 100%;
-}
-#root > div { /* Target the main div inside App.jsx */
-     min-height: 100%;
+/* Fix for default react-slick arrow pseudo-elements */
+.slick-prev::before,
+.slick-next::before {
+  content: "" !important;
 }
 
-
-/* --- Remove the duplicated @layer base from previous response --- */
-/* No need for a second @layer base here */
+#root, body, html { height: 100%; }
+#root > div { min-height: 100%; @apply bg-brand-background; }

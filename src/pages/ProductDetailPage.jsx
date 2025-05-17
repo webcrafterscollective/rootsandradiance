@@ -1,5 +1,5 @@
 // src/pages/ProductDetailPage.jsx
-import React, { useState, useEffect, Fragment, useRef } from 'react'; // Added useRef
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { fetchProductById, fetchProducts } from '../api/woocommerce';
 
@@ -7,20 +7,20 @@ import { fetchProductById, fetchProducts } from '../api/woocommerce';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { FaStar, FaRegStar, FaCheckCircle, FaInfoCircle, FaTimesCircle } from 'react-icons/fa'; // Added icons for notification
+import { FaStar, FaRegStar, FaCheckCircle, FaInfoCircle, FaTimesCircle, FaShoppingCart } from 'react-icons/fa'; // Added FaShoppingCart
 
 // Contexts & Hooks
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../components/ProductCard'; // Ensure ProductCard also uses themed colors
 
-// --- Reusable Components (StarRating, TabButton - remain the same) ---
+// --- Reusable Components ---
 const StarRating = ({ rating = 0 }) => {
     const totalStars = 5;
     const numericRating = parseFloat(rating) || 0;
     const fullStars = Math.min(Math.max(0, Math.floor(numericRating)), totalStars);
     return (
-        <div className="flex text-yellow-400 my-2">
+        <div className="flex text-brand-primary my-2"> {/* Theme: Star color */}
             {[...Array(fullStars)].map((_, i) => <FaStar key={`full-${i}`} />)}
             {[...Array(totalStars - fullStars)].map((_, i) => <FaRegStar key={`empty-${i}`} />)}
         </div>
@@ -30,36 +30,49 @@ const StarRating = ({ rating = 0 }) => {
 const TabButton = ({ children, isActive, onClick }) => (
     <button
         onClick={onClick}
-        className={`py-2 px-4 text-sm font-medium border-b-2 ${
+        className={`py-3 px-4 text-sm sm:text-base font-medium border-b-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-background transition-colors duration-200 whitespace-nowrap ${
             isActive
-                ? 'border-black text-black'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-        } transition-colors duration-200 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-opacity-50`}
+                ? 'border-brand-primary text-brand-primary' // Theme: Active tab
+                : 'border-transparent text-brand-foreground/70 hover:text-brand-primary hover:border-brand-primary/50' // Theme: Inactive tab
+        }`}
     >
         {children}
     </button>
 );
 
-
-// --- Custom Notification Component ---
 const NotificationBox = ({ message, type, onClose }) => {
-    const bgColor = type === 'success' ? 'bg-green-100 border-green-400 text-green-700' :
-                    type === 'error' ? 'bg-red-100 border-red-400 text-red-700' :
-                    'bg-blue-100 border-blue-400 text-blue-700'; // Default to info
+    const typeStyles = {
+        success: {
+            bg: 'bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300',
+            iconColor: 'text-green-500 dark:text-green-400',
+            icon: FaCheckCircle,
+        },
+        error: {
+            bg: 'bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300',
+            iconColor: 'text-red-500 dark:text-red-400',
+            icon: FaTimesCircle,
+        },
+        info: {
+            bg: 'bg-blue-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300',
+            iconColor: 'text-blue-500 dark:text-blue-400',
+            icon: FaInfoCircle,
+        },
+    };
 
-    const Icon = type === 'success' ? FaCheckCircle :
-                 type === 'error' ? FaTimesCircle :
-                 FaInfoCircle;
+    const currentStyle = typeStyles[type] || typeStyles.info;
+    const IconComponent = currentStyle.icon;
 
     return (
-        // Position fixed at the bottom right, adjust as needed
-        <div className={`fixed bottom-5 right-5 z-[100] p-4 rounded-md border shadow-lg flex items-start ${bgColor} max-w-sm transition-opacity duration-300 ease-in-out`}>
-            <Icon className="h-5 w-5 mr-3 flex-shrink-0" aria-hidden="true" />
+        <div className={`fixed bottom-5 right-5 z-[100] p-4 rounded-md border shadow-lg flex items-start max-w-sm transition-all duration-300 ease-in-out ${currentStyle.bg} text-brand-foreground`}>
+            <IconComponent className={`h-5 w-5 mr-3 flex-shrink-0 ${currentStyle.iconColor}`} aria-hidden="true" />
             <div className="flex-grow text-sm">
                 {message}
             </div>
-            <button onClick={onClose} className="ml-4 -mt-1 -mr-1 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current">
-                <span className="sr-only">Dismiss</span>
+            <button 
+                onClick={onClose} 
+                className={`ml-4 -mt-1 -mr-1 p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${currentStyle.iconColor} focus-visible:ring-current`}
+                aria-label="Dismiss notification"
+            >
                 <FaTimesCircle className="h-4 w-4" aria-hidden="true" />
             </button>
         </div>
@@ -73,239 +86,193 @@ const ProductDetailPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // --- Local State ---
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [loadingProduct, setLoadingProduct] = useState(true);
     const [productError, setProductError] = useState(null);
-    // State for the notification box
     const [notification, setNotification] = useState({ show: false, message: '', type: 'info' });
-    const notificationTimeoutRef = useRef(null); // Ref to manage timeout
+    const notificationTimeoutRef = useRef(null);
 
-    // --- Context Hooks ---
     const { isAuthenticated, loading: authLoading, logout } = useAuth();
-    const { addItem, addingItem, addItemError: cartAddItemErrorHook } = useCart(); // Rename hook error to avoid conflict
+    const { addItem, addingItem, addItemError: cartAddItemErrorHook } = useCart();
 
-    // --- Gallery Settings (remains the same) ---
-    const gallerySettings = { /* ... */ };
+    // Slick Slider settings (customize as needed)
+    const gallerySettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        adaptiveHeight: true,
+        // customPaging: i => ( <div className="w-2.5 h-2.5 rounded-full cursor-pointer slick-dot-inactive"></div> ), // Defined in index.css
+        // nextArrow: <SampleNextArrow />, // Define custom arrows if needed
+        // prevArrow: <SamplePrevArrow />,
+    };
 
-    // --- Data Fetching (remains the same) ---
     useEffect(() => {
-        // Ensure product ID exists
         if (!productId) {
-            console.error("Product Detail Page: No Product ID/Slug found in URL.");
-            setProductError("No product identifier found in the URL.");
+            setProductError("No product identifier found.");
             setLoadingProduct(false);
             return;
         }
-
         const loadProductData = async () => {
             setLoadingProduct(true);
             setProductError(null);
-            setProduct(null); // Reset product state
-            setRelatedProducts([]); // Reset related state
-            console.log(`[Product Detail] Attempting to fetch product via REST/Proxy: ${productId}`);
-
+            setProduct(null);
+            setRelatedProducts([]);
             try {
                 const fetchedProduct = await fetchProductById(productId);
-                if (typeof fetchedProduct === 'object' && fetchedProduct !== null && fetchedProduct.id) {
+                if (fetchedProduct && fetchedProduct.id) {
                     setProduct(fetchedProduct);
-                    // Fetch related products
+                    setActiveTab(fetchedProduct.description ? 'description' : (fetchedProduct.acf?.ingredients ? 'ingredients' : 'how_to_use'));
+
                     if (fetchedProduct.related_ids && fetchedProduct.related_ids.length > 0) {
-                        const relatedIds = fetchedProduct.related_ids.slice(0, 4);
-                        try {
-                            const related = await fetchProducts({ include: relatedIds.join(',') });
-                            setRelatedProducts(related);
-                        } catch(relatedError){
-                            console.error("[Product Detail] Failed to fetch related products:", relatedError);
-                        }
+                        const related = await fetchProducts({ include: fetchedProduct.related_ids.slice(0, 4).join(','), per_page: 4 });
+                        setRelatedProducts(related);
                     }
                 } else {
                     setProductError(`Product not found.`);
-                    setProduct(null);
                 }
             } catch (err) {
-                 setProductError(err.message || `Failed to load product details for ${productId}.`);
+                 setProductError(err.message || `Failed to load product details.`);
             } finally {
                 setLoadingProduct(false);
             }
         };
-
         loadProductData();
     }, [productId]);
 
-    // --- Cleanup notification timeout on unmount ---
     useEffect(() => {
-        return () => {
-            if (notificationTimeoutRef.current) {
-                clearTimeout(notificationTimeoutRef.current);
-            }
-        };
+        return () => clearTimeout(notificationTimeoutRef.current);
     }, []);
 
-    // --- Function to show notification ---
     const showNotification = (message, type = 'info', duration = 4000) => {
-        // Clear existing timeout if any
-        if (notificationTimeoutRef.current) {
-            clearTimeout(notificationTimeoutRef.current);
-        }
+        clearTimeout(notificationTimeoutRef.current);
         setNotification({ show: true, message, type });
-        // Set new timeout
         notificationTimeoutRef.current = setTimeout(() => {
             setNotification(prev => ({ ...prev, show: false }));
-            notificationTimeoutRef.current = null; // Clear ref after timeout
         }, duration);
     };
 
-    // --- Close notification handler ---
     const closeNotification = () => {
-        if (notificationTimeoutRef.current) {
-            clearTimeout(notificationTimeoutRef.current);
-            notificationTimeoutRef.current = null;
-        }
+        clearTimeout(notificationTimeoutRef.current);
         setNotification(prev => ({ ...prev, show: false }));
     };
 
-    // --- Add to Cart Handler ---
     const handleAddToCart = () => {
         if (authLoading) return;
-
         if (!isAuthenticated) {
             showNotification("Please log in to add items to your cart.", 'info');
             navigate('/login', { state: { from: location } });
             return;
         }
-
         const productDatabaseId = product?.databaseId || product?.id;
         if (!productDatabaseId) {
-            console.error("Product Database ID is missing for cart operation.");
             showNotification("Cannot add item: Product ID is missing.", 'error');
             return;
         }
-
-        const isVariable = product?.type === 'variable';
-        if (isVariable) {
-            showNotification("Please select product options.", 'info');
-            // Consider navigating to the product page if it's complex
-            // navigate(`/products/${product.slug || product.id}`);
+        if (product?.type === 'variable') {
+            showNotification("This is a variable product. Please select options on its page.", 'info');
+            // Potentially navigate to a more detailed variable product selection view if not already there
+            // or ensure variation selection UI is present on this page.
             return;
         }
-
-        console.log(`Adding to cart: Product ID ${productDatabaseId}, Qty ${quantity}`);
-
-        addItem({
-            productId: productDatabaseId,
-            quantity: quantity,
-        }).then(response => {
-            console.log("Added to cart response:", response);
-            // Show success notification
-            showNotification(`${product?.name || 'Item'} added to cart!`, 'success');
-        }).catch(err => {
-            console.error("Error adding item from Product Detail Page:", err);
-             const isAuthError = err.message.includes("Expired token") || err.message.includes("invalid session") || err.graphQLErrors?.some(gqlErr => gqlErr.extensions?.category === 'authentication');
-
-             if (isAuthError) {
-                 // Show auth error notification
-                 showNotification("Your session has expired. Please log in again.", 'error');
-                 logout();
-                 navigate('/login', { replace: true, state: { from: location } });
-             } else {
-                 // Show generic error notification
-                 showNotification(`Failed to add item: ${err.message || 'Please try again.'}`, 'error');
-             }
-        });
+        addItem({ productId: productDatabaseId, quantity })
+            .then(() => showNotification(`${product?.name || 'Item'} added to cart!`, 'success'))
+            .catch(err => {
+                const isAuthError = err.message.includes("Expired token") || err.graphQLErrors?.some(gqlErr => gqlErr.extensions?.category === 'authentication');
+                if (isAuthError) {
+                    showNotification("Your session has expired. Please log in again.", 'error');
+                    logout(); // This should also clear Apollo cache via AuthContext
+                    navigate('/login', { replace: true, state: { from: location } });
+                } else {
+                    showNotification(`Failed to add item: ${err.message || 'Please try again.'}`, 'error');
+                }
+            });
     };
 
-
-    // --- Prepare Data for Rendering ---
     const isVariable = product?.type === 'variable';
     const isInStock = product?.stock_status === 'instock';
     const hasImages = product?.images && Array.isArray(product.images) && product.images.length > 0;
-    const highlights = [
-        product?.acf?.highlight_1, product?.acf?.highlight_2,
-        product?.acf?.highlight_3, product?.acf?.highlight_4,
-    ].filter(text => text && text.trim() !== '');
+    const highlights = [product?.acf?.highlight_1, product?.acf?.highlight_2, product?.acf?.highlight_3, product?.acf?.highlight_4].filter(Boolean);
 
-
-    // --- Render Logic ---
     if (loadingProduct) {
-        return <div className="container mx-auto px-6 py-10 text-center text-gray-600">Loading product details...</div>;
+        return <div className="container mx-auto px-4 sm:px-6 py-16 text-center text-brand-foreground/80">Loading product details...</div>;
     }
     if (productError) {
-        return <div className="container mx-auto px-6 py-10 text-center text-red-600">Error: {productError}</div>;
+        return <div className="container mx-auto px-4 sm:px-6 py-16 text-center text-red-500">Error: {productError}</div>;
     }
     if (!product) {
-        return <div className="container mx-auto px-6 py-10 text-center text-gray-700">Product not found.</div>;
+        return <div className="container mx-auto px-4 sm:px-6 py-16 text-center text-brand-foreground/80">Product not found.</div>;
     }
 
-
     return (
-        <> {/* Use Fragment to allow NotificationBox outside the main container */}
-            {/* Render Notification Box */}
+        <>
             {notification.show && (
-                <NotificationBox
-                    message={notification.message}
-                    type={notification.type}
-                    onClose={closeNotification}
-                />
+                <NotificationBox message={notification.message} type={notification.type} onClose={closeNotification} />
             )}
-
+            {/* Assuming App.jsx or index.css sets bg-brand-background for the page */}
             <div className="container mx-auto px-4 sm:px-6 py-8 md:py-12">
-                {/* --- Main Product Section --- */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
                     {/* Left: Image Gallery */}
-                    <div className="product-gallery">
-                        {hasImages && product.images.length > 1 ? (
-                            <Slider {...gallerySettings}>
-                                {product.images.map((image) => (
-                                    <div key={image.id}>
-                                        <img
-                                            src={image.src} alt={image.alt || product.name || 'Product image'}
-                                            className="w-full h-auto object-contain rounded-lg shadow-sm aspect-square bg-gray-50"
-                                            onError={(e) => { e.target.src = '/images/placeholder.png'; }}
-                                        />
-                                    </div>
-                                ))}
-                            </Slider>
-                        ) : hasImages ? (
-                            <img
-                                src={product.images[0].src} alt={product.images[0].alt || product.name || 'Product image'}
-                                className="w-full h-auto object-contain rounded-lg shadow-sm aspect-square bg-gray-50"
-                                onError={(e) => { e.target.src = '/images/placeholder.png'; }}
-                            />
+                    <div className="product-gallery sticky top-24"> {/* Added sticky positioning */}
+                        {hasImages ? (
+                            product.images.length > 1 ? (
+                                <Slider {...gallerySettings}>
+                                    {product.images.map((image) => (
+                                        <div key={image.id} className="aspect-square bg-brand-card rounded-lg overflow-hidden">
+                                            <img
+                                                src={image.src} alt={image.alt || product.name}
+                                                className="w-full h-full object-contain"
+                                                onError={(e) => { e.target.src = '/images/placeholder-dark.png'; }}
+                                            />
+                                        </div>
+                                    ))}
+                                </Slider>
+                            ) : (
+                                <div className="aspect-square bg-brand-card rounded-lg overflow-hidden shadow-sm">
+                                    <img
+                                        src={product.images[0].src} alt={product.images[0].alt || product.name}
+                                        className="w-full h-full object-contain"
+                                        onError={(e) => { e.target.src = '/images/placeholder-dark.png'; }}
+                                    />
+                                </div>
+                            )
                         ) : (
-                            <div className="w-full aspect-square bg-gray-200 rounded-lg flex items-center justify-center shadow-sm">
-                                <span className="text-gray-500">No Image Available</span>
+                            <div className="aspect-square bg-brand-subtle/50 rounded-lg flex items-center justify-center shadow-sm">
+                                <span className="text-brand-foreground/70">No Image Available</span>
                             </div>
                         )}
                     </div>
 
                     {/* Right: Product Info */}
-                    <div>
-                        <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-gray-900">{product.name}</h1>
+                    <div className="space-y-5">
+                        <h1 className="text-3xl lg:text-4xl font-bold text-brand-heading leading-tight">{product.name}</h1>
+                        
                         {product.short_description && (
                             <div
-                                className="text-sm text-gray-600 mb-3 prose prose-sm max-w-none"
+                                className="text-brand-foreground/90 prose prose-sm max-w-none prose-p:my-1" // Theme: Prose for short description
                                 dangerouslySetInnerHTML={{ __html: product.short_description }}
                             />
                         )}
+
                         <StarRating rating={parseFloat(product.average_rating || 0)} />
+
                         {product.price_html ? (
                             <div
-                                className="text-2xl font-semibold text-gray-800 my-4"
+                                className="text-2xl font-semibold text-brand-primary-light my-1" // Theme: Price color
                                 dangerouslySetInnerHTML={{ __html: product.price_html }} />
-                        ) : <p className="my-4 text-gray-500">Price unavailable</p>}
+                        ) : <p className="my-1 text-brand-foreground/70">Price unavailable</p>}
 
-                        {/* Highlights */}
                         {highlights.length > 0 && (
-                            <div className="my-4 space-y-2 text-sm">
-                                <h3 className="font-semibold mb-1 text-gray-800">Key Highlights:</h3>
-                                <ul className='list-none pl-0 space-y-1.5'>
+                            <div className="my-3 space-y-1.5 text-sm">
+                                <h3 className="font-semibold text-brand-foreground mb-1.5">Key Highlights:</h3>
+                                <ul className='list-none pl-0 space-y-1'>
                                 {highlights.map((text, index) => (
-                                    <li key={index} className="flex items-start text-gray-700">
-                                        <FaCheckCircle className="text-green-500 mr-2 mt-1 flex-shrink-0" size={14}/>
+                                    <li key={index} className="flex items-start text-brand-foreground/90">
+                                        <FaCheckCircle className="text-brand-accent mr-2 mt-0.5 flex-shrink-0" size={16}/> {/* Theme: Accent for checkmark */}
                                         <span>{text}</span>
                                     </li>
                                 ))}
@@ -314,16 +281,18 @@ const ProductDetailPage = () => {
                         )}
 
                         {/* Cart Section */}
-                        <div className="my-6 space-y-4">
-                            {isVariable && (
-                                <div className="p-4 border rounded bg-blue-50 text-blue-800 text-sm">
-                                    This is a variable product. Please select options.
+                        <div className="my-5 pt-5 border-t border-brand-subtle space-y-4">
+                            {isVariable ? (
+                                <div className="p-3 border border-blue-500/30 rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 text-sm">
+                                    This is a variable product. More options might be available.
+                                    <Link to={`/products/${product.slug || product.id}`} className="font-medium underline ml-1 hover:text-blue-500 dark:hover:text-blue-200">View Options</Link>
                                 </div>
-                            )}
-                            {(!isVariable) && isInStock && (
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                                    <div className="flex items-center flex-shrink-0">
-                                        <label htmlFor="quantity" className="font-medium mr-3 text-sm text-gray-700">Quantity:</label>
+                            ) : !isInStock ? (
+                                <p className="font-semibold text-red-500 p-3 border border-red-500/30 bg-red-500/10 rounded text-center">Out of Stock</p>
+                            ) : (
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                    <div className="flex items-center">
+                                        <label htmlFor="quantity" className="font-medium mr-2 text-sm text-brand-foreground/90">Quantity:</label>
                                         <input
                                             type="number"
                                             id="quantity"
@@ -332,79 +301,83 @@ const ProductDetailPage = () => {
                                             max={product.stock_quantity || undefined}
                                             value={quantity}
                                             onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                            className="w-16 border border-gray-300 rounded px-2 py-1 text-center text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                            className="w-16 border border-brand-subtle rounded px-2 py-1.5 text-center text-sm bg-brand-card text-brand-foreground focus:ring-brand-primary focus:border-brand-primary"
                                             aria-label="Product quantity"
                                         />
                                     </div>
                                     <button
                                         onClick={handleAddToCart}
-                                        disabled={authLoading || addingItem || isVariable}
-                                        className="bg-black text-white py-2.5 px-8 rounded text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                                        disabled={authLoading || addingItem}
+                                        className="flex items-center justify-center bg-brand-primary text-brand-textOnPrimary py-2.5 px-6 rounded text-sm font-semibold hover:bg-brand-primary-hover transition-colors disabled:opacity-60 disabled:cursor-not-allowed w-full sm:w-auto"
                                     >
+                                        <FaShoppingCart className="mr-2" />
                                         {addingItem ? 'Adding...' : (isAuthenticated ? 'Add to Cart' : 'Login to Add')}
                                     </button>
                                 </div>
                             )}
-                            {!isVariable && !isInStock && (
-                                <p className="font-semibold text-red-600 p-3 border border-red-200 bg-red-50 rounded text-center">Out of Stock</p>
-                            )}
-                            {/* Display hook error state if needed for non-auth issues */}
                             {cartAddItemErrorHook && !cartAddItemErrorHook.message.includes("Expired token") && (
-                                <p className="text-red-500 text-sm mt-2 text-center sm:text-left">
-                                    Error: {cartAddItemErrorHook.message}
-                                </p>
+                                <p className="text-red-500 text-xs mt-1.5 text-center sm:text-left">Error: {cartAddItemErrorHook.message}</p>
                             )}
                         </div>
 
-                        {/* Stock Status & SKU */}
-                        <div className="text-sm text-gray-500 space-y-1 border-t pt-4 mt-6">
-                            <p> Status: <span className={`font-semibold ${isInStock ? 'text-green-600' : 'text-red-600'}`}> {isInStock ? 'In Stock' : 'Out of Stock'} {isInStock && product.manage_stock && product.stock_quantity != null && ` (${product.stock_quantity} available)`} </span> </p>
-                            {product.sku && <p>SKU: <span className='text-gray-700'>{product.sku}</span></p>}
+                        <div className="text-xs text-brand-foreground/70 space-y-0.5 border-t border-brand-subtle pt-4">
+                            <p> Status: <span className={`font-semibold ${isInStock ? 'text-green-500' : 'text-red-500'}`}> {isInStock ? 'In Stock' : 'Out of Stock'} {isInStock && product.manage_stock && product.stock_quantity != null && ` (${product.stock_quantity} available)`} </span> </p>
+                            {product.sku && <p>SKU: <span className='text-brand-foreground/90'>{product.sku}</span></p>}
+                             {product.categories && product.categories.length > 0 && (
+                                <p>Categories: {product.categories.map(cat => (
+                                    <Link key={cat.id} to={`/category/${cat.slug}`} className="hover:text-brand-primary underline ml-1">{cat.name}</Link>
+                                ))}.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {/* --- Tabs Section --- */}
-                <div className="my-12 border-t pt-6">
-                    <div className="border-b border-gray-200 mb-6">
-                        <nav className="-mb-px flex space-x-4 sm:space-x-6 flex-wrap" aria-label="Tabs">
-                            {product.description && (
-                                <TabButton isActive={activeTab === 'description'} onClick={() => setActiveTab('description')}>Description</TabButton>
+                {(product.description || product.acf?.ingredients || product.acf?.how_to_use) && (
+                    <div className="my-10 md:my-16 border-t border-brand-subtle pt-6 md:pt-8">
+                        <div className="border-b border-brand-subtle mb-6">
+                            <nav className="-mb-px flex space-x-3 sm:space-x-5 flex-wrap" aria-label="Product details tabs">
+                                {product.description && (
+                                    <TabButton isActive={activeTab === 'description'} onClick={() => setActiveTab('description')}>Description</TabButton>
+                                )}
+                                {product.acf?.ingredients && product.acf.ingredients.trim() !== '' && (
+                                    <TabButton isActive={activeTab === 'ingredients'} onClick={() => setActiveTab('ingredients')}>Ingredients</TabButton>
+                                )}
+                                {product.acf?.how_to_use && product.acf.how_to_use.trim() !== '' && (
+                                    <TabButton isActive={activeTab === 'how_to_use'} onClick={() => setActiveTab('how_to_use')}>How to Use</TabButton>
+                                )}
+                                {/* TODO: Add Reviews Tab */}
+                            </nav>
+                        </div>
+                        {/* Ensure your index.css .prose styles are themed for brand-foreground, brand-heading, brand-primary etc. */}
+                        <div className="py-4 prose prose-sm sm:prose max-w-none text-brand-foreground prose-headings:text-brand-heading prose-a:text-brand-primary hover:prose-a:text-brand-primary-hover prose-strong:text-brand-foreground">
+                            {activeTab === 'description' && product.description && (
+                                <div dangerouslySetInnerHTML={{ __html: product.description }} />
                             )}
-                            {product.acf?.ingredients && product.acf.ingredients.trim() !== '' && (
-                                <TabButton isActive={activeTab === 'ingredients'} onClick={() => setActiveTab('ingredients')}>Ingredients</TabButton>
+                            {activeTab === 'ingredients' && product.acf?.ingredients && (
+                                <div dangerouslySetInnerHTML={{ __html: product.acf.ingredients }} />
                             )}
-                            {product.acf?.how_to_use && product.acf.how_to_use.trim() !== '' && (
-                                <TabButton isActive={activeTab === 'how_to_use'} onClick={() => setActiveTab('how_to_use')}>How to Use</TabButton>
+                            {activeTab === 'how_to_use' && product.acf?.how_to_use && (
+                                <div dangerouslySetInnerHTML={{ __html: product.acf.how_to_use }} />
                             )}
-                        </nav>
+                        </div>
                     </div>
-                    <div className="py-4 prose prose-sm max-w-none">
-                        {activeTab === 'description' && product.description && (
-                            <div dangerouslySetInnerHTML={{ __html: product.description }} />
-                        )}
-                        {activeTab === 'ingredients' && product.acf?.ingredients && (
-                            <div dangerouslySetInnerHTML={{ __html: product.acf.ingredients }} />
-                        )}
-                        {activeTab === 'how_to_use' && product.acf?.how_to_use && (
-                            <div dangerouslySetInnerHTML={{ __html: product.acf.how_to_use }} />
-                        )}
-                    </div>
-                </div>
+                )}
 
                 {/* --- Related Products --- */}
                 {relatedProducts.length > 0 && (
-                    <div className="my-12 border-t pt-8">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-6 text-left text-gray-800">You May Also Like</h2>
+                    <div className="my-10 md:my-16 border-t border-brand-subtle pt-8">
+                        <h2 className="text-xl lg:text-2xl font-semibold mb-6 text-left text-brand-heading">You May Also Like</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
                             {relatedProducts.map(related => (
-                                    <ProductCard key={related.id} product={related} />
-                                ))}
+                                <ProductCard key={related.id} product={related} />
+                            ))}
                         </div>
                     </div>
                 )}
             </div>
-        </> // Close Fragment
+        </>
     );
 };
 

@@ -17,8 +17,8 @@ const SampleNextArrow = (props) => {
         flex items-center justify-center
         w-9 h-9 md:w-10 md:h-10
         rounded-full
-        bg-brand-primary text-white                  optimale color of the arrow button.
-        hover:bg-brand-primary-hover              hover state of the arrow button.
+        bg-brand-primary text-white
+        hover:bg-brand-primary-hover
         focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 focus:ring-offset-brand-background
         shadow-md
         transition-colors duration-200
@@ -44,8 +44,8 @@ const SamplePrevArrow = (props) => {
         flex items-center justify-center
         w-9 h-9 md:w-10 md:h-10
         rounded-full
-        bg-brand-primary text-white                 Arrow button background.
-        hover:bg-brand-primary-hover              hover state of the arrow button.
+        bg-brand-primary text-white
+        hover:bg-brand-primary-hover
         focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 focus:ring-offset-brand-background
         shadow-md
         transition-colors duration-200
@@ -76,10 +76,11 @@ const Hero = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // MODIFIED backgroundStyles for lighter gradients
   const backgroundStyles = [
-    'bg-gradient-to-r from-brand-background via-green-50 to-brand-primary/10',
-    'bg-gradient-to-r from-brand-background via-pink-50 to-brand-accent/10',
-    'bg-brand-primary/5',
+    'bg-gradient-to-r from-gray-100 via-green-50 to-brand-primary/10', // Was: from-brand-background
+    'bg-gradient-to-r from-gray-100 via-pink-50 to-brand-accent/10',   // Was: from-brand-background
+    'bg-brand-primary/5', // This is already very light. If still an issue, consider 'bg-gray-50' or 'bg-gradient-to-r from-gray-100 via-yellow-50 to-yellow-100'
   ];
 
   useEffect(() => {
@@ -118,7 +119,7 @@ const Hero = () => {
       }
     };
     loadHeroProducts();
-  }, []);
+  }, []); // Removed backgroundStyles from dependencies as it's defined in the component scope
 
 
   // --- Slider Settings ---
@@ -132,7 +133,7 @@ const Hero = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: !isSingleSlide, // Autoplay only if needed
-    autoplaySpeed: 3000,      // *** Updated time per slide (6 seconds) ***
+    autoplaySpeed: 6000,      // Kept 6 seconds per slide, adjusted from previous 3000ms comment
     pauseOnHover: true,       // Pauses autoplay on hover (standard behavior)
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
@@ -158,6 +159,7 @@ const Hero = () => {
         <Slider {...settings}>
           {slides.map((slide, index) => (
             <div key={slide.id}>
+              {/* The slide.bgColor (which uses the modified backgroundStyles) is applied here */}
               <div className={`flex flex-col md:flex-row items-center justify-center min-h-[60vh] md:min-h-[70vh] lg:min-h-[calc(100vh-120px)] ${slide.bgColor} p-6 md:p-12 lg:p-16 relative`}>
                 {/* Image Section */}
                 <div className="w-full md:w-1/2 flex justify-center items-center mb-6 md:mb-0 relative z-10 order-1 md:order-1 px-4">
