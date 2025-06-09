@@ -17,12 +17,11 @@ import RegisterPage from './pages/RegisterPage';
 import AccountPage from './pages/AccountPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import SearchResultsPage from './pages/SearchResultsPage';
-
+import RefundPolicyPage from './pages/RefundPolicyPage';
+import TermsConditionsPage from './pages/TermsConditionsPage'; // <-- IMPORT THE NEW PAGE
+import FAQPage from './pages/faq';
 // Import the FloatingWhatsApp component
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
-
-// Optional: If you have a logo in your assets folder and want to use it as an avatar
-// import siteLogo from './assets/your-logo.png'; // Make sure the path is correct
 
 function App() {
   return (
@@ -40,6 +39,9 @@ function App() {
           {/* Static Pages */}
           <Route path="/about-us" element={<AboutPage />} />
           <Route path="/contact-us" element={<ContactPage />} />
+          <Route path="/refund-and-cancellation-policy" element={<RefundPolicyPage />} />
+          <Route path="/terms-conditions" element={<TermsConditionsPage />} /> 
+
 
           {/* Auth Pages */}
           <Route path="/login" element={<LoginPage />} />
@@ -51,7 +53,7 @@ function App() {
            <Route path="/cart" element={<CartPage />} />
 
           {/* TODO: Add routes for other footer links (FAQs, Policy etc.) */}
-          {/* Example: <Route path="/faqs" element={<FaqPage />} /> */}
+          <Route path="/faqs" element={<FAQPage />} />
 
           {/* Catch-all for 404 Not Found (Optional) */}
           {/* <Route path="*" element={<NotFoundPage />} /> */}
@@ -59,23 +61,18 @@ function App() {
       </main>
       <Footer />
 
-      {/* Add the FloatingWhatsApp component here */}
       <FloatingWhatsApp
-        phoneNumber="YOUR_INTERNATIONAL_PHONE_NUMBER" // E.g., "12345678900" (country code + number, no symbols)
-        accountName="Roots & Radiance" // Your company name
-        avatar="/images/footer-logo.png" // Example: Using the logo path from your Footer.jsx. Adjust if needed or remove for default.
-        statusMessage="Typically replies within an hour" // Optional: Text below account name
-        chatMessage="Hello there! 🌿 How can we help you with your skincare or wellness needs?" // Optional: Default chat message
-        placeholder="Type a message..." // Optional: Placeholder for the input field
+        phoneNumber="+919958854005"
+        accountName="Roots & Radiance"
+        avatar="/images/footer-logo.png"
+        statusMessage="Typically replies within an hour"
+        chatMessage="Hello there! 🌿 How can we help you with your skincare or wellness needs?"
+        placeholder="Type a message..."
         allowEsc
         allowClickAway
         notification
         notificationSound
-        notificationDelay={60000} // Optional: Delay in ms for notification (e.g., 60 seconds)
-        // You can customize colors to match your theme:
-        // buttonStyle={{ backgroundColor: '#yourBrandColor', bottom: '20px', right: '20px' }}
-        // chatboxStyle={{ /* chatbox custom styles */ }}
-        // darkMode={false} // Set to true if you want a dark theme for the chatbox
+        notificationDelay={60000}
       />
     </div>
   );
