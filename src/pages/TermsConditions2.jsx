@@ -1,12 +1,12 @@
-// src/pages/TermsConditionsPage.jsx
+// src/pages/TermsConditionsPage2.jsx
 import React, { useState, useEffect } from 'react';
 import { fetchPageBySlug } from '../api/wordpressApi'; // Your API function
 
-const TermsConditionsPage = () => {
+const TermsConditionsPage2 = () => {
   const [pageContent, setPageContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const pageSlug = 'shipping-policy'; // Slug for your Terms & Conditions page
+  const pageSlug = 'terms-conditions'; // Slug for your Terms & Conditions page
 
   useEffect(() => {
     const loadPage = async () => {
@@ -34,7 +34,7 @@ const TermsConditionsPage = () => {
       <div className="container mx-auto px-4 sm:px-6">
         {loading && (
           <p className="text-center text-xl text-brand-foreground opacity-75 py-16">
-            Loading Shipping Policies...
+            Loading Terms & Conditions...
           </p>
         )}
         {error && (
@@ -69,4 +69,4 @@ const TermsConditionsPage = () => {
   );
 };
 
-export default TermsConditionsPage;
+export default TermsConditionsPage2;

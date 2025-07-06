@@ -1,12 +1,12 @@
-// src/pages/TermsConditionsPage.jsx
+// src/pages/PrivacyPolicyPage.jsx
 import React, { useState, useEffect } from 'react';
 import { fetchPageBySlug } from '../api/wordpressApi'; // Your API function
 
-const TermsConditionsPage = () => {
+const PrivacyPolicyPage = () => {
   const [pageContent, setPageContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const pageSlug = 'shipping-policy'; // Slug for your Terms & Conditions page
+  const pageSlug = 'privacy-policy'; // Slug for your Terms & Conditions page
 
   useEffect(() => {
     const loadPage = async () => {
@@ -34,7 +34,7 @@ const TermsConditionsPage = () => {
       <div className="container mx-auto px-4 sm:px-6">
         {loading && (
           <p className="text-center text-xl text-brand-foreground opacity-75 py-16">
-            Loading Shipping Policies...
+            Loading Privacy Policy...
           </p>
         )}
         {error && (
@@ -69,4 +69,4 @@ const TermsConditionsPage = () => {
   );
 };
 
-export default TermsConditionsPage;
+export default PrivacyPolicyPage;

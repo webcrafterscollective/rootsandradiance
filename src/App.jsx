@@ -18,8 +18,15 @@ import AccountPage from './pages/AccountPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import RefundPolicyPage from './pages/RefundPolicyPage';
-import TermsConditionsPage from './pages/TermsConditionsPage'; // <-- IMPORT THE NEW PAGE
+import TermsConditionsPage from './pages/TermsConditionsPage';
+import TermsConditionsPage2 from './pages/TermsConditions2';
+import PrivacyPolicyPage from './pages/PrivacyPolicy';
 import FAQPage from './pages/faq';
+
+// --- Import the new Checkout and Confirmation pages ---
+import CheckoutPage from './pages/CheckoutPage';
+import OrderConfirmationPage from './pages/OrderConfirmationPage';
+
 // Import the FloatingWhatsApp component
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
 
@@ -40,7 +47,9 @@ function App() {
           <Route path="/about-us" element={<AboutPage />} />
           <Route path="/contact-us" element={<ContactPage />} />
           <Route path="/refund-and-cancellation-policy" element={<RefundPolicyPage />} />
-          <Route path="/terms-conditions" element={<TermsConditionsPage />} /> 
+          <Route path="/terms-conditions" element={<TermsConditionsPage2 />} /> 
+          <Route path="/shipping-policy" element={<TermsConditionsPage />} /> 
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} /> 
 
 
           {/* Auth Pages */}
@@ -49,10 +58,15 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/account" element={<AccountPage />} />
 
-           {/* Cart Page */}
+           {/* Cart & Checkout Pages */}
            <Route path="/cart" element={<CartPage />} />
+           
+           {/* --- Add the new routes for the checkout flow --- */}
+           <Route path="/checkout" element={<CheckoutPage />} />
+           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
 
-          {/* TODO: Add routes for other footer links (FAQs, Policy etc.) */}
+
+          {/* Other Pages */}
           <Route path="/faqs" element={<FAQPage />} />
 
           {/* Catch-all for 404 Not Found (Optional) */}

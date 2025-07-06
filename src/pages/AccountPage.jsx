@@ -1,91 +1,85 @@
 // src/pages/AccountPage.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import OrderHistory from '../components/OrderHistory'; // --- Import the new component
 
 const AccountPage = () => {
-  // Get auth state and functions from context
-  const { isAuthenticated, user, logout, loading } = useAuth();
-  const navigate = useNavigate(); // Hook for navigation
+  const { user, logout, loading } = useAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('details'); // 'details' or 'orders'
 
-  // Logout handler
   const handleLogout = () => {
     logout();
-    navigate('/'); // Redirect to home after logout
+    navigate('/');
   };
 
-  // Show loading state while authentication check is running
   if (loading) {
-    return (
-        // Consistent page structure for loading
-        <div className="container mx-auto px-4 sm:px-6 py-8 md:py-12 text-center">
-            Loading account...
-        </div>
-    );
+    return <div className="container mx-auto text-center py-10">Loading...</div>;
   }
 
-  // If authentication check is complete and user is not logged in, redirect
-  if (!isAuthenticated) {
-    // Redirect to login page, preserving the intended destination ('/account')
-    // 'replace' ensures the login page doesn't get added to history stack unnecessarily
-    return <Navigate to="/login" state={{ from: '/account' }} replace />;
+  if (!user) {
+    // This case should ideally be handled by a protected route, but it's a good fallback.
+    navigate('/login');
+    return null;
   }
 
-  // Render account details if authenticated
   return (
-    // Apply theme background and padding
-    <div className="container mx-auto px-4 sm:px-6 py-8 md:py-12 font-sans text-brand-foreground">
-      <h1 className="text-3xl font-bold mb-6">My Account</h1>
-
-      {/* Welcome Message - Use user data from context */}
-      {user && (
-        // Use theme colors for border and background (subtle)
-        <div className="mb-8 p-4 border border-brand-subtle rounded bg-white shadow-sm">
-          <p className="text-lg">
-            Welcome back, <span className="font-semibold text-brand-primary">{user.firstName || user.nicename || user.username}!</span>
-          </p>
-          {/* Display email if available */}
-          {user.email && <p className="text-sm text-gray-600">Email: {user.email}</p>}
-        </div>
-      )}
-
-      {/* Account Sections Placeholders */}
-      <div className="space-y-6">
-        {/* Order History Placeholder */}
-        <div className="p-6 border border-brand-subtle rounded bg-white shadow-sm">
-          <h2 className="text-xl font-semibold mb-3">Order History</h2>
-          <p className="text-gray-600 mb-4">You have no recent orders.</p>
-          {/* TODO: Implement order fetching and display logic here */}
-          <Link
-            to="/shop"
-            // Use theme colors for link button styling
-            className="text-sm text-brand-primary hover:text-brand-primary-hover font-medium"
-          >
-            Start Shopping
-          </Link>
-        </div>
-
-        {/* Account Details Placeholder */}
-        <div className="p-6 border border-brand-subtle rounded bg-white shadow-sm">
-          <h2 className="text-xl font-semibold mb-3">Account Details</h2>
-          <p className="text-gray-600 mb-4">Manage your personal information and password.</p>
-          {/* TODO: Link to an edit details page or implement inline editing */}
-           <button className="text-sm text-brand-primary hover:text-brand-primary-hover font-medium disabled:opacity-50" disabled>
-               Edit Details (Not Implemented)
-           </button>
-        </div>
-
-        {/* Logout Section */}
-        <div className="mt-8 pt-6 border-t border-brand-subtle">
-           {/* --- Use Accent Color for Logout Button --- */}
-          <button
-            onClick={handleLogout}
-            className="bg-brand-accent hover:bg-brand-accent-hover text-white px-6 py-2 rounded text-sm font-medium transition-colors duration-200"
-          >
-            Log Out
-          </button>
-        </div>
+    <div className="container mx-auto px-4 sm:px-6 py-8 md:py-12">
+      <h1 className="text-3xl font-semibold mb-6">My Account</h1>
+      
+      <div className="border-b border-gray-200 mb-6">
+          <nav className="-mb-px flex space-x-6">
+              <button
+                  onClick={() => setActiveTab('details')}
+                  className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'details'
+                          ? 'border-indigo-500 text-indigo-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                  Account Details
+              </button>
+              <button
+                  onClick={() => setActiveTab('orders')}
+                  className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'orders'
+                          ? 'border-indigo-500 text-indigo-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                  Order History
+              </button>
+          </nav>
       </div>
+
+      <div>
+      {activeTab === 'details' && (
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm text-brand-text-dark"> {/* <-- ADD CLASS HERE */}
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Account Information</h2>
+                  <div className="space-y-3">
+                      <p><strong>First Name:</strong> {user.firstName}</p>
+                      <p><strong>Last Name:</strong> {user.lastName}</p>
+                      <p><strong>Display Name:</strong> {user.displayName}</p>
+                      <p><strong>Email:</strong> {user.email}</p>
+                  </div>
+                  <button 
+                      onClick={handleLogout}
+                      className="mt-6 inline-block bg-red-600 text-white px-5 py-2 rounded text-sm font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  >
+                      Logout
+                  </button>
+              </div>
+          )}
+
+          {activeTab === 'orders' && (
+              <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Your Orders</h2>
+                  <OrderHistory />
+              </div>
+          )}
+      </div>
+
     </div>
   );
 };
