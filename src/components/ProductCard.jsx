@@ -302,6 +302,7 @@ const ProductCard = ({ product }) => {
 
   // Prepare product data for display
   const imageUrl = product.images?.[0]?.src || '/images/placeholder-dark.png';
+  const lifestyleImageUrl = product.images?.[1]?.src || imageUrl;
   const imageAlt = product.images?.[0]?.alt || product.name || 'Product image';
   const productIdForLink = product.slug || product.id;
 
@@ -318,10 +319,15 @@ const ProductCard = ({ product }) => {
     <div className="border border-brand-subtle rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 group flex flex-col h-full bg-brand-card text-brand-foreground">
       {/* The entire top section is a link to the product's detail page */}
       <Link to={`/products/${productIdForLink}`} className="block flex-grow flex flex-col" title={product.name || 'View Product'}>
-        <div className="w-full h-48 bg-brand-subtle/30 flex items-center justify-center overflow-hidden p-2 relative">
+        <div className="w-full h-48 bg-brand-subtle/30 flex items-center justify-center overflow-hidden p-2 relative aspect-w-1 aspect-h-1">
             <img
                 src={imageUrl} alt={imageAlt}
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover transition-opacity duration-300 ease-in-out group-hover:opacity-0"
+                loading="lazy" onError={(e) => { e.target.src = '/images/placeholder-dark.png'; }}
+            />
+            <img
+                src={lifestyleImageUrl} alt={imageAlt}
+                className="w-full h-full object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
                 loading="lazy" onError={(e) => { e.target.src = '/images/placeholder-dark.png'; }}
             />
         </div>

@@ -1,5 +1,5 @@
 /* src/index.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -91,6 +91,54 @@
 }
 .slick-dots li.slick-active button div.slick-dot-inactive {
   background-color: theme('colors.brand.primary.DEFAULT') !important; opacity: 1;
+}
+
+.login-form-link {
+  color: #FFD700; /* Bright Gold */
+}
+
+.product-description ol {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.how-to-use-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.how-to-use-section ul li {
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 10px;
+}
+
+.how-to-use-section ul li:before {
+  content: counter(step);
+  counter-increment: step;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #FFD700;
+  color: #000;
+  text-align: center;
+  line-height: 20px;
+  font-weight: bold;
+}
+
+.how-to-use-section .ingredients-list {
+  display: none;
+}
+
+.floating-whatsapp-chatbox input {
+  color: #000 !important;
+}
+
+input[type="tel"] {
+  color: #000 !important;
 }
 
 /* Fix for default react-slick arrow pseudo-elements */

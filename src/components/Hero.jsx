@@ -99,6 +99,7 @@ const Hero = () => {
                  return {
                     id: product.id,
                     image: product.images?.[0]?.src || '/images/placeholder.png',
+                    lifestyleImage: product.images?.[1]?.src || product.images?.[0]?.src || '/images/placeholder.png',
                     alt: product.images?.[0]?.alt || product.name || 'Product image',
                     bgColor: backgroundStyles[index % backgroundStyles.length],
                     preTitle: product.categories?.[0]?.name || "Featured Product",
@@ -125,7 +126,7 @@ const Hero = () => {
   // --- Slider Settings ---
   const isSingleSlide = slides.length <= 1;
   const settings = {
-    dots: !isSingleSlide,
+    dots: true,
     appendDots: dots => (<div className="absolute bottom-6 md:bottom-8 left-0 right-0"><ul className="m-0 p-0 flex justify-center">{dots}</ul></div>),
     customPaging: i => (<div className="w-2.5 h-2.5 rounded-full cursor-pointer slick-dot-inactive"></div>),
     infinite: !isSingleSlide, // Ensures continuous loop if more than one slide
@@ -162,12 +163,18 @@ const Hero = () => {
               {/* The slide.bgColor (which uses the modified backgroundStyles) is applied here */}
               <div className={`flex flex-col md:flex-row items-center justify-center min-h-[60vh] md:min-h-[70vh] lg:min-h-[calc(100vh-120px)] ${slide.bgColor} p-6 md:p-12 lg:p-16 relative`}>
                 {/* Image Section */}
-                <div className="w-full md:w-1/2 flex justify-center items-center mb-6 md:mb-0 relative z-10 order-1 md:order-1 px-4">
-                  <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
+                <div className="w-full md:w-1/2 flex justify-center items-center mb-6 md:mb-0 relative z-10 order-1 md:order-1 px-4 group">
+                  <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl h-[50vh] md:h-[60vh]">
                     <img
                       src={slide.image} alt={slide.alt}
-                      className="w-full h-auto object-contain max-h-[50vh] md:max-h-[60vh]"
+                      className="w-full h-full object-cover transition-opacity duration-300 ease-in-out group-hover:opacity-0"
                       loading={index === 0 ? "eager" : "lazy"}
+                      onError={(e) => { e.target.src = '/images/placeholder.png'; }}
+                    />
+                    <img
+                      src={slide.lifestyleImage} alt={slide.alt}
+                      className="w-full h-full object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                      loading="lazy"
                       onError={(e) => { e.target.src = '/images/placeholder.png'; }}
                     />
                   </div>

@@ -668,7 +668,7 @@ const LoginForm = () => {
           Not a member?{' '}
           <Link
             to="/register"
-            className="font-semibold leading-6 text-brand-primary hover:underline"
+            className="font-semibold leading-6 text-brand-primary hover:underline login-form-link"
           >
             Sign up now
           </Link>

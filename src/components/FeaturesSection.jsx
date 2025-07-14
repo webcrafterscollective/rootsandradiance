@@ -71,28 +71,27 @@
 // src/components/FeaturesSection.jsx
 import React from 'react';
 // Import the specific icons needed
-import { TbCirclesRelation, TbDroplet } from 'react-icons/tb';
-import { IoFlaskOutline, IoGlobeOutline } from 'react-icons/io5';
+import { FiEye, FiAward, FiDollarSign, FiGlobe } from 'react-icons/fi';
 
 // Define the feature data - makes it easy to manage/update
 const features = [
   {
-    Icon: TbCirclesRelation,
+    Icon: FiEye,
     title: 'Transparency',
     description: 'Full disclosure of ingredients used & their concentration',
   },
   {
-    Icon: IoFlaskOutline,
+    Icon: FiAward,
     title: 'Efficacy',
     description: 'Formulations developed in our in-house laboratories',
   },
   {
-    Icon: TbDroplet,
+    Icon: FiDollarSign,
     title: 'Affordable',
     description: 'Skincare, accessible to all.',
   },
   {
-    Icon: IoGlobeOutline,
+    Icon: FiGlobe,
     title: 'Only the best',
     description: 'Ingredients sourced from across the world',
   },

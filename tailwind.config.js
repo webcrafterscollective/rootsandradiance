@@ -97,7 +97,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Assuming Inter is your desired font
+        sans: ['Roboto', 'sans-serif'],
       },
     },
   },

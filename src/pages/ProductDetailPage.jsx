@@ -1059,6 +1059,27 @@ import ProductCard from '../components/ProductCard';
 import ProductReviews from '../components/ProductReviews'; // IMPORT REVIEW COMPONENT
 
 // Display-Only StarRating for product summary (from REST API data)
+const SampleNextArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={`${className} slick-arrow slick-next`}
+        style={{ ...style, display: 'block', right: '10px' }}
+        onClick={onClick}
+      />
+    );
+  };
+
+  const SamplePrevArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={`${className} slick-arrow slick-prev`}
+        style={{ ...style, display: 'block', left: '10px', zIndex: 1 }}
+        onClick={onClick}
+      />
+    );
+  };
 const ProductSummaryStarRating = ({ rating = 0 }) => {
     const totalStars = 5;
     const numericRating = parseFloat(rating) || 0;
@@ -1122,7 +1143,24 @@ const ProductDetailPage = () => {
     const { isAuthenticated, loading: authLoading, logout } = useAuth();
     const { addItem, addingItem, addItemError: cartAddItemErrorHook } = useCart();
 
-    const gallerySettings = { dots: true, infinite: true, speed: 500, slidesToShow: 1, slidesToScroll: 1, adaptiveHeight: true };
+    const gallerySettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        adaptiveHeight: true,
+        nextArrow: <SampleNextArrow />,
+        prevArrow: <SamplePrevArrow />,
+        appendDots: dots => (
+            <div style={{ bottom: '-40px' }}>
+                <ul style={{ margin: '0px' }}> {dots} </ul>
+            </div>
+        ),
+        customPaging: i => (
+            <div className="w-2.5 h-2.5 rounded-full cursor-pointer slick-dot-inactive"></div>
+        )
+    };
 
     useEffect(() => {
         if (!routeProductId) {
@@ -1269,9 +1307,9 @@ const ProductDetailPage = () => {
                     
                     <div className="py-4">
                         
-                        {activeTab === 'description' && product.description?.trim() && <div className='' dangerouslySetInnerHTML={{ __html: product.description }} />}
+                        {activeTab === 'description' && product.description?.trim() && <div className='product-description' dangerouslySetInnerHTML={{ __html: product.description }} />}
                         {activeTab === 'ingredients' && product.acf?.ingredients?.trim() && <div className='' dangerouslySetInnerHTML={{ __html: product.acf.ingredients }} />}
-                        {activeTab === 'how_to_use' && product.acf?.how_to_use?.trim() && <div className='' dangerouslySetInnerHTML={{ __html: product.acf.how_to_use }} />}
+                        {activeTab === 'how_to_use' && product.acf?.how_to_use?.trim() && <div className='how-to-use-section' dangerouslySetInnerHTML={{ __html: product.acf.how_to_use }} />}
                         {activeTab === 'reviews' && (
                             graphQLProductId && product.id ? ( // Ensure WordPress Post ID (product.id) and GraphQL Global ID (graphQLProductId) are available
                                 <ProductReviews
