@@ -1,4 +1,3 @@
-// src/graphql/phonepe.gql.js
 import { gql } from '@apollo/client';
 
 export const INITIATE_PHONEPE_PAYMENT_MUTATION = gql`
@@ -7,6 +6,7 @@ export const INITIATE_PHONEPE_PAYMENT_MUTATION = gql`
       success
       redirectUrl
       message
+      merchantOrderId
     }
   }
 `;

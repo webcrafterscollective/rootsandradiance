@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
+    "abcd": "^2.0.1",
     "axios": "^1.9.0",
     "graphql": "^16.11.0",
     "react": "^19.0.0",

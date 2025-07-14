@@ -21,6 +21,7 @@ import RefundPolicyPage from './pages/RefundPolicyPage';
 import TermsConditionsPage from './pages/TermsConditionsPage';
 import TermsConditionsPage2 from './pages/TermsConditions2';
 import PrivacyPolicyPage from './pages/PrivacyPolicy';
+import PaymentCallbackPage from './pages/PaymentCallbackPage';
 import FAQPage from './pages/faq';
 
 // --- Import the new Checkout and Confirmation pages ---
@@ -64,6 +65,7 @@ function App() {
            {/* --- Add the new routes for the checkout flow --- */}
            <Route path="/checkout" element={<CheckoutPage />} />
            <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+           <Route path="/payment-callback" element={<PaymentCallbackPage />} />
 
 
           {/* Other Pages */}
