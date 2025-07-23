@@ -135,3 +135,6 @@ dist
 dist/
 # Vite cache directory
 .vite/
+
+# ignore firebase directory
+.firebase/
