@@ -539,7 +539,7 @@ const RegisterForm = () => {
           Already have an account?{' '}
           <Link
             to="/login"
-            className="font-semibold leading-6 text-brand-primary hover:underline"
+            className="font-semibold leading-6 text-brand-primary hover:underline" style={{ color: '#000000ff', fontWeight: '600', textDecoration: 'underline' }}
           >
             Log in
           </Link>
