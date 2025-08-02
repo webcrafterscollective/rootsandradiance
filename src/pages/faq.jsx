@@ -56,17 +56,26 @@ const FAQPage = () => {
         )}
         {pageContent && (
           // 'article' provides semantic meaning.
-          <div>
-            <h1 className="text-4xl sm:text-5xl font-bold mb-10 text-brand-heading text-center !leading-tight">
-              Frequently Asked Questions
-            </h1>
-            {pageContent.content.rendered.split('<h2>').slice(1).map((item, index) => {
-              const parts = item.split('</h2>');
-              const title = parts[0];
-              const content = parts[1];
-              return <Card key={index} title={title} content={content} />;
-            })}
-          </div>
+
+          // comment down the below code as it can't fetch the data properly ........
+
+          // <div>
+          //   <h1 className="text-4xl sm:text-5xl font-bold mb-10 text-brand-heading text-center !leading-tight">
+          //     Frequently Asked Questions
+          //   </h1>
+          //   {pageContent.content.rendered.split('<h2>').slice(1).map((item, index) => {
+          //     const parts = item.split('</h2>');
+          //     const title = parts[0];
+          //     const content = parts[1];
+          //     return <Card key={index} title={title} content={content} />;
+          //   })}
+          // </div>
+
+          // Added by Pralay for fetching the backend data start +++++
+          <div className="faq-content prose prose-invert max-w-none" 
+            dangerouslySetInnerHTML={{ __html: pageContent.content.rendered }} />
+          // Added by Pralay for fetching the backend data end +++++
+
         )}
         {!loading && !pageContent && !error && (
           // Fallback message if no content, using themed foreground color
