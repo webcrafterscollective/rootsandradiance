@@ -531,7 +531,10 @@ const CartPage = () => {
       return;
     }
 
-    updateItemQuantities([{ key, quantity }]).catch(err => {
+    updateItemQuantities([{ key, quantity }]).then(() => {
+      // ✅ Reload the page after successful update
+      window.location.reload();
+    }).catch(err => {
         console.error("Failed to update quantity:", err);
         alert(`Failed to update quantity: ${err.message}`);
     });
@@ -613,15 +616,16 @@ const CartPage = () => {
               const imageNode = variationNode?.image || productNode?.image;
               const productName = variationNode?.name || productNode?.name || 'Product';
               const productLink = `/products/${productNode?.slug || productNode?.databaseId}`;
-              const itemPrice = item.total && item.quantity ? `$${(parseFloat(item.total.replace(/[^0-9.]/g, '')) / item.quantity).toFixed(2)}` : 'N/A';
+              const itemPrice = item.total && item.quantity ? `₹${(parseFloat(item.total.replace(/[^0-9.]/g, '')) / item.quantity).toFixed(2)}` : 'N/A';
 
               return (
                 <tr key={item.key}>
                   <td className="py-4 pl-4 pr-2 w-16"><Link to={productLink}><img className="h-16 w-16 object-contain rounded border" src={imageNode?.sourceUrl || '/images/placeholder.png'} alt={productName}/></Link></td>
-                  <td className="py-4 px-2 sm:px-6"><Link to={productLink} className="text-sm font-medium text-gray-900 hover:text-blue-600">{productName}</Link></td>
-                  <td className="py-4 px-2 sm:px-6 text-sm hidden md:table-cell">{itemPrice}</td>
-                  <td className="py-4 px-2 sm:px-6 text-center"><input type="number" min="0" value={item.quantity} className="w-16 border rounded p-1 text-sm text-center" onChange={(e) => handleUpdateQuantity(item.key, e.target.value)} disabled={updatingItemQuantities || removingItem} /></td>
-                  <td className="py-4 px-2 sm:px-6 text-sm text-right hidden md:table-cell">{item.total}</td>
+                  <td className="py-4 px-2 sm:px-6"><Link to={productLink} className="text-sm text-black font-bold hover:text-yellow-600" style={{ color: '#fae315ff' }}>{productName}</Link></td>
+                  <td className="py-4 px-2 sm:px-6 text-sm hidden md:table-cell text-black font-bold">{itemPrice}</td>
+                  {/* <td className="py-4 px-2 sm:px-6 text-center"><input type="number" min="0" value={item.quantity} className="w-16 border rounded p-1 text-sm text-center" onChange={(e) => handleUpdateQuantity(item.key, e.target.value)} disabled={updatingItemQuantities || removingItem} /></td> */}
+                  <td className="py-4 px-2 sm:px-6 text-center"><input type="number" min="0" value={item.quantity} className="w-16 border rounded p-1 text-sm text-center" onChange={(e) => handleUpdateQuantity(item.key, e.target.value)} disabled={updatingItemQuantities || removingItem}/></td>
+                  <td className="py-4 px-2 sm:px-6 text-sm text-right hidden md:table-cell text-black font-bold">{item.total}</td>
                   <td className="py-4 px-2 sm:px-6 text-center"><button onClick={() => handleRemoveItem(item.key)} disabled={removingItem || updatingItemQuantities} className="text-red-500 hover:text-red-700 text-xl disabled:opacity-50">&times;</button></td>
                 </tr>
               );

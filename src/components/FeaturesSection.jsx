@@ -72,6 +72,8 @@
 import React from 'react';
 // Import the specific icons needed
 import { FiEye, FiAward, FiDollarSign, FiGlobe } from 'react-icons/fi';
+import { FaMicroscope,FaWallet } from "react-icons/fa";
+import { TbWorldCheck } from "react-icons/tb";
 
 // Define the feature data - makes it easy to manage/update
 const features = [
@@ -81,17 +83,20 @@ const features = [
     description: 'Full disclosure of ingredients used & their concentration',
   },
   {
-    Icon: FiAward,
+    // Icon: FiAward,
+    Icon: FaMicroscope,
     title: 'Efficacy',
     description: 'Formulations developed in our in-house laboratories',
   },
   {
-    Icon: FiDollarSign,
+    // Icon: FiDollarSign,
+    Icon: FaWallet,
     title: 'Affordable',
     description: 'Skincare, accessible to all.',
   },
   {
-    Icon: FiGlobe,
+    // Icon: FiGlobe,
+    Icon: TbWorldCheck,
     title: 'Only the best',
     description: 'Ingredients sourced from across the world',
   },

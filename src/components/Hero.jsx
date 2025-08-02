@@ -78,6 +78,7 @@ const Hero = () => {
 
   // MODIFIED backgroundStyles for lighter gradients
   const backgroundStyles = [
+    // 'bg-white' //need to make it white : when need to fix hero gradiant
     'bg-gradient-to-r from-gray-100 via-green-50 to-brand-primary/10', // Was: from-brand-background
     'bg-gradient-to-r from-gray-100 via-pink-50 to-brand-accent/10',   // Was: from-brand-background
     'bg-brand-primary/5', // This is already very light. If still an issue, consider 'bg-gray-50' or 'bg-gradient-to-r from-gray-100 via-yellow-50 to-yellow-100'
@@ -164,7 +165,7 @@ const Hero = () => {
               <div className={`flex flex-col md:flex-row items-center justify-center min-h-[60vh] md:min-h-[70vh] lg:min-h-[calc(100vh-120px)] ${slide.bgColor} p-6 md:p-12 lg:p-16 relative`}>
                 {/* Image Section */}
                 <div className="w-full md:w-1/2 flex justify-center items-center mb-6 md:mb-0 relative z-10 order-1 md:order-1 px-4 group">
-                  <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl h-[50vh] md:h-[60vh]">
+                  <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl h-[50vh] md:h-[67vh]">
                     <img
                       src={slide.image} alt={slide.alt}
                       className="w-full h-full object-cover transition-opacity duration-300 ease-in-out group-hover:opacity-0"
@@ -182,7 +183,7 @@ const Hero = () => {
                 {/* Text Section */}
                 <div className="w-full md:w-1/2 text-center md:text-left md:pl-6 lg:pl-12 xl:pl-20 relative z-10 order-2 md:order-2 px-4">
                   {slide.preTitle && <p className="text-sm font-medium text-gray-600 mb-1 md:mb-2">{slide.preTitle}</p>}
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-heading mb-3 md:mb-4 leading-tight">{slide.title}</h1>
+                  <h1 className="text-3xl sm:text-3xl lg:text-4xl font-bold text-brand-heading mb-3 md:mb-4 leading-tight">{slide.title}</h1>
                   <p className="text-base text-gray-700 mb-6 max-w-md mx-auto md:mx-0">{slide.description}</p>
                   <Link
                     to={slide.buttonLink}

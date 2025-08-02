@@ -1870,7 +1870,8 @@ const Navbar = () => {
                         )}
                         {authLoading && <div className="w-5 h-5 animate-spin rounded-full border-2 border-brand-subtle border-t-brand-primary"></div>}
 
-                        <Link to="/cart" aria-label="Cart" className="p-2 hover:text-brand-primary relative">
+                        {/* added onclick event to fetch all latest cart at checkout change by pralay */}
+                        <Link to="/cart" aria-label="Cart" className="p-2 hover:text-brand-primary relative" onClick={(e) => {e.preventDefault(); window.location.href = "/cart";}}> 
                             <FiShoppingCart size={20} />
                             {!cartLoading && cartItemCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-brand-accent text-brand-textOnPrimary text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">

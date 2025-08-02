@@ -127,18 +127,19 @@ const CategoryPage = () => {
 
                         {/* Placeholder for Filter Options */}
                         <div className="space-y-4">
-                             <p className="text-sm text-gray-500">(Filter options like price range, attributes, stock status will go here)</p>
+                             <p className="text-sm text-gray-500 text-center">(Soting as per your preference)</p>
                              {/* Example Filter Group */}
                              <div>
-                                 <h3 className="font-medium text-sm mb-2">Availability</h3>
                                  <label className="flex items-center space-x-2 text-sm">
                                      <input type="checkbox" className="rounded" />
-                                     <span>In Stock</span>
+                                     <span style={{ color:'grey' }}>In Stock</span>
                                  </label>
+                                 
+                                 <h3 className="font-medium text-sm mt-2 mb-2">Availability</h3>
                              </div>
                              {/* Add more filter sections */}
                         </div>
-                         <button className="mt-6 w-full text-sm text-center text-gray-600 hover:text-black" onClick={() => {setActiveFilters({}); setSortBy('menu_order');}}>
+                         <button className="mt-6 w-full text-sm text-center text-gray-600 hover:text-black focus:ring-0 hover:bg-transparent" onClick={() => {setActiveFilters({}); setSortBy('menu_order');}}>
                              Clear Filters
                          </button>
                      </div>
