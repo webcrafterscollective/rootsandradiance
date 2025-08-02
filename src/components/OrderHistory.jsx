@@ -46,7 +46,7 @@ const OrderHistory = () => {
     const orders = data?.customer?.orders?.nodes;
 
     if (!orders || orders.length === 0) {
-        return <p className="text-gray-600">You have not placed any orders yet.</p>;
+        return <p className="text-white text-center">You have not placed any orders yet.</p>;
     }
 
     return (
@@ -55,9 +55,9 @@ const OrderHistory = () => {
                 <div key={order.id} className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
                     <div className="sm:flex sm:justify-between sm:items-start">
                         <div className="mb-4 sm:mb-0">
-                            <h3 className="text-lg font-bold text-gray-800">Order #{order.orderNumber}</h3>
-                            <p className="text-sm text-gray-500">Date: {new Date(order.date).toLocaleDateString()}</p>
-                            <p className="text-sm text-gray-500">Total: <span className="font-medium text-gray-700">{order.total}</span></p>
+                            <h3 className="text-lg font-bold text-white">Order #{order.orderNumber}</h3>
+                            <p className="text-sm text-white">Date: {new Date(order.date).toLocaleDateString()}</p>
+                            <p className="text-sm text-white">Total: <span className="font-medium text-gray-700">{order.total}</span></p>
                         </div>
                         <div className="flex items-center space-x-2">
                             {order.lineItems.nodes.slice(0, 3).map(item => (

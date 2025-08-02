@@ -1904,15 +1904,15 @@ const ReviewForm = ({ productDatabaseId, onSubmitSuccess, showNotification }) =>
 
     return (
         <div className="mt-8 pt-6 border-t">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Write a Review</h4>
+            <h4 className="text-lg font-semibold text-white mb-4">Write a Review</h4>
             <form onSubmit={handleSubmit} className="space-y-4">
-                {user && <p className="text-sm text-gray-700">You are reviewing as <span className="font-semibold">{user.displayName || user.username}</span>.</p>}
+                {user && <p className="text-sm text-white">You are reviewing as <span className="font-semibold">{user.displayName || user.username}</span>.</p>}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Rating <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-medium text-white mb-1">Your Rating <span className="text-red-500">*</span></label>
                     <InteractiveStarRating rating={rating} setRating={setRating} />
                 </div>
                 <div>
-                    <label htmlFor="reviewComment" className="block text-sm font-medium text-gray-700 mb-1">Your Review <span className="text-red-500">*</span></label>
+                    <label htmlFor="reviewComment" className="block text-sm font-medium text-white mb-1">Your Review <span className="text-red-500">*</span></label>
                     <textarea id="reviewComment" value={comment} onChange={(e) => setComment(e.target.value)} rows="4" required className={`${inputBaseClasses} min-h-[100px]`} />
                 </div>
                 <button type="submit" disabled={submittingReview} className="bg-blue-600 text-white py-2.5 px-6 rounded text-sm font-semibold hover:bg-blue-700 disabled:opacity-60">
@@ -1946,12 +1946,12 @@ const ProductReviews = ({ productDatabaseId, showNotification }) => {
     return (
         <div className="space-y-8 py-6">
             <div>
-                <h3 className="text-xl lg:text-2xl font-semibold text-gray-800 mb-2">Customer Reviews</h3>
+                <h3 className="text-xl lg:text-2xl font-semibold text-white mb-2">Customer Reviews</h3>
                 
                 {reviewCount > 0 && (
                     <div className="flex items-center mb-6">
                         <StarRatingDisplay rating={averageRating} size="text-2xl" />
-                        <p className="ml-3 text-md text-gray-700">
+                        <p className="ml-3 text-md text-white">
                             {averageRating.toFixed(1)} based on {reviewCount} review{reviewCount !== 1 ? 's' : ''}
                         </p>
                     </div>
@@ -1969,12 +1969,12 @@ const ProductReviews = ({ productDatabaseId, showNotification }) => {
                                         <StarRatingDisplay rating={review.rating} size="text-base" />
                                     </div>
                                 </div>
-                                <div className="mt-2 prose prose-sm max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: review.content || '' }} />
+                                <div className="mt-2 prose prose-sm max-w-none text-white" dangerouslySetInnerHTML={{ __html: review.content || '' }} />
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center py-4 text-gray-600">No reviews yet. Be the first to share your thoughts!</p>
+                    <p className="text-center py-4 text-white">No reviews yet. Be the first to share your thoughts!</p>
                 )}
             </div>
             

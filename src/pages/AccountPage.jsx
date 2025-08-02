@@ -74,7 +74,7 @@ const AccountPage = () => {
 
           {activeTab === 'orders' && (
               <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Your Orders</h2>
+                  <h2 className="text-xl font-bold text-white text-center mb-4">Your Orders</h2>
                   <OrderHistory />
               </div>
           )}
