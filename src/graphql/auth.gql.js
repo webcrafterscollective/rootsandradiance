@@ -56,3 +56,16 @@ export const SEND_PASSWORD_RESET_EMAIL_MUTATION = gql`
     }
   }
 `;
+
+
+export const UPDATE_USER_MUTATION = gql`
+  mutation UpdateUser($id: ID!, $firstName: String, $lastName: String) {
+    updateUser(input: {id: $id, firstName: $firstName, lastName: $lastName}) {
+      user {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+`;
