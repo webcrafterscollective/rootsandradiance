@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "bartaapp-backend"
-  }
+    "default": "bartaapp-backend",
+    "prod": "bartaapp-backend"
+  },
+  "targets": {},
+  "etags": {}
 }

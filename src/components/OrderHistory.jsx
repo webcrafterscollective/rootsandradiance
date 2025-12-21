@@ -1,16 +1,19 @@
+// src/components/OrderHistory.jsx
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_CUSTOMER_ORDERS } from '../graphql/orders.gql';
-import ShimmerPlaceholder from './ShimmerPlaceholder'; // Reusing your shimmer component
+import ShimmerPlaceholder from './ShimmerPlaceholder';
 
 // A simple component to visually track order status
 const OrderTracker = ({ status }) => {
     const statuses = ['PROCESSING', 'SHIPPED', 'DELIVERED'];
-    const currentStatusIndex = statuses.findIndex(s => s === status.toUpperCase());
+    // Safely handle status if it's somehow null/undefined
+    const safeStatus = status ? status.toUpperCase() : '';
+    const currentStatusIndex = statuses.findIndex(s => s === safeStatus);
 
     // Handle other statuses like PENDING, ON_HOLD, COMPLETED, CANCELLED, FAILED
     if (currentStatusIndex === -1) {
-        return <p className="mt-2 text-sm font-semibold capitalize text-gray-700">Status: {status.replace('_', ' ').toLowerCase()}</p>;
+        return <p className="mt-2 text-sm font-semibold capitalize text-gray-700">Status: {safeStatus.replace('_', ' ').toLowerCase()}</p>;
     }
 
     return (
@@ -51,36 +54,67 @@ const OrderHistory = () => {
 
     return (
         <div className="space-y-6">
-            {orders.map(order => (
-                <div key={order.id} className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <div className="sm:flex sm:justify-between sm:items-start">
-                        <div className="mb-4 sm:mb-0">
-                            <h3 className="text-lg font-bold text-gray-800">Order #{order.orderNumber}</h3>
-                            <p className="text-sm text-gray-500">Date: {new Date(order.date).toLocaleDateString()}</p>
-                            <p className="text-sm text-gray-500">Total: <span className="font-medium text-gray-700">{order.total}</span></p>
+            {orders.map(order => {
+                // Filter out null/undefined items before processing
+                const validLineItems = order.lineItems?.nodes?.filter(item => item != null) || [];
+                
+                return (
+                    <div key={order.id} className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
+                        <div className="sm:flex sm:justify-between sm:items-start">
+                            <div className="mb-4 sm:mb-0">
+                                <h3 className="text-lg font-bold text-gray-800">Order #{order.orderNumber}</h3>
+                                <p className="text-sm text-gray-500">Date: {order.date ? new Date(order.date).toLocaleDateString() : 'N/A'}</p>
+                                <p className="text-sm text-gray-500">Total: <span className="font-medium text-gray-700">{order.total}</span></p>
+                            </div>
+                            
+                            {/* Product Images */}
+                            <div className="flex items-center space-x-2">
+                                {validLineItems.slice(0, 3).map((item, index) => {
+                                    // Double-check item exists
+                                    if (!item) return null;
+                                    
+                                    // Safely access product node
+                                    const product = item.product?.node;
+                                    
+                                    // If product is null (deleted), render a fallback placeholder
+                                    if (!product) {
+                                        return (
+                                            <div 
+                                                key={`deleted-${order.id}-${index}`} 
+                                                className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded border text-[10px] text-gray-400" 
+                                                title="Product Unavailable"
+                                            >
+                                                N/A
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <img
+                                            key={product.id || `item-${order.id}-${index}`}
+                                            src={product.image?.sourceUrl || '/images/placeholder.png'}
+                                            alt={product.image?.altText || product.name || 'Product Image'}
+                                            className="w-12 h-12 object-contain rounded border"
+                                        />
+                                    );
+                                })}
+                                
+                                {/* Counter for extra items */}
+                                {validLineItems.length > 3 && (
+                                    <div className="w-12 h-12 rounded border bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
+                                        +{validLineItems.length - 3}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="flex items-center space-x-2">
-                            {order.lineItems.nodes.slice(0, 3).map(item => (
-                                <img
-                                    key={item.product.node.id}
-                                    src={item.product.node.image?.sourceUrl || '/images/placeholder.png'}
-                                    alt={item.product.node.image?.altText || item.product.node.name}
-                                    className="w-12 h-12 object-contain rounded border"
-                                />
-                            ))}
-                            {order.lineItems.nodes.length > 3 && (
-                                <div className="w-12 h-12 rounded border bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
-                                    +{order.lineItems.nodes.length - 3}
-                                </div>
-                            )}
+                        
+                        <div className="mt-4 border-t pt-4">
+                            <h4 className="text-md font-semibold text-gray-800 mb-2">Track Order</h4>
+                            <OrderTracker status={order.status} />
                         </div>
                     </div>
-                    <div className="mt-4 border-t pt-4">
-                        <h4 className="text-md font-semibold text-gray-800 mb-2">Track Order</h4>
-                        <OrderTracker status={order.status} />
-                    </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 };

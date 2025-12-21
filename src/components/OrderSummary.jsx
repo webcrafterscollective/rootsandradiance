@@ -13,22 +13,32 @@ const OrderSummary = () => {
       <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
       
       <div className="space-y-4">
-        {cart.contents.nodes.map(item => (
-          <div key={item.key} className="flex items-center justify-between">
-            <div className="flex items-center">
-              <img 
-                src={item.product.node.image?.sourceUrl || '/images/placeholder.png'} 
-                alt={item.product.node.name} 
-                className="w-12 h-12 object-contain rounded border mr-4"
-              />
-              <div>
-                <p className="font-medium text-sm">{item.product.node.name}</p>
-                <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+        {cart.contents.nodes.map(item => {
+          // Safe access to product and variation data
+          if (!item || !item.key) return null;
+          
+          const product = item.product?.node;
+          const variation = item.variation?.node;
+          const image = variation?.image || product?.image;
+          const name = variation?.name || product?.name || 'Product';
+          
+          return (
+            <div key={item.key} className="flex items-center justify-between">
+              <div className="flex items-center">
+                <img 
+                  src={image?.sourceUrl || '/images/placeholder.png'} 
+                  alt={name} 
+                  className="w-12 h-12 object-contain rounded border mr-4"
+                />
+                <div>
+                  <p className="font-medium text-sm">{name}</p>
+                  <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                </div>
               </div>
+              <p className="text-sm">{item.total}</p>
             </div>
-            <p className="text-sm">{item.total}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="border-t pt-3 mt-3 space-y-2">

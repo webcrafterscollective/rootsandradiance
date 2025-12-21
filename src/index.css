@@ -16,18 +16,21 @@
     @apply font-sans text-base text-brand-foreground bg-brand-background h-full;
   }
 
+  /* Global Headings (Gold) */
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold text-brand-heading;
   }
 
+  /* Global Links (Light Gold) */
   a:not([class*="button"]) {
     @apply text-brand-primary-light hover:text-brand-primary transition-colors duration-200;
   }
 
   hr, .divider {
-    @apply border-brand-subtle; /* This uses the DEFAULT key from the 'subtle' object correctly for border utility */
+    @apply border-brand-subtle;
   }
 
+  /* Global Inputs */
   input[type='text'],
   input[type='email'],
   input[type='password'],
@@ -41,48 +44,74 @@
            disabled:opacity-60 disabled:bg-brand-subtle disabled:text-gray-500 disabled:cursor-not-allowed;
   }
 
-  .on-light-section input, .on-light-section select, .on-light-section textarea {
-    @apply bg-white border-brand-subtle-light text-brand-text-dark placeholder-gray-400;
-  }
-
   button, .button {
     @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary focus:ring-offset-brand-background;
   }
 
-  /* Shimmer Animation for Dark Theme */
+  /* --- LIGHT SECTION OVERRIDES (Fix for Login/Register Forms) --- */
+  
+  /* 1. Base Text: Black */
+  .on-light-section {
+    @apply text-brand-text-dark; 
+  }
+
+  /* 2. Inputs on Light: White bg, Black text */
+  .on-light-section input, 
+  .on-light-section select, 
+  .on-light-section textarea {
+    @apply bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-brand-primary;
+  }
+
+  /* 3. Headings on Light: Black (Overrides Global Gold) */
+  .on-light-section h1, 
+  .on-light-section h2, 
+  .on-light-section h3, 
+  .on-light-section h4, 
+  .on-light-section h5, 
+  .on-light-section h6 {
+    @apply text-gray-900; 
+  }
+
+  /* 4. Links on Light: Black (Overrides Global Light Gold) */
+  .on-light-section a:not([class*="button"]) {
+    @apply text-gray-900 hover:text-black font-medium underline decoration-transparent hover:decoration-black transition-all;
+  }
+
+  /* 5. Labels on Light: Black */
+  .on-light-section label {
+    @apply text-gray-900;
+  }
+
+  /* 6. Buttons on Light: Ensure text is Black on Gold buttons */
+  .on-light-section button {
+    @apply text-gray-900; /* Forces button text to be dark/black */
+  }
+
+  /* --- End Light Section Overrides --- */
+
+  /* Shimmer Animation */
   @keyframes shimmer {
     0% { background-position: -1000px 0; }
     100% { background-position: 1000px 0; }
   }
   .animate-pulse {
-    /* CORRECTED: Explicitly use .DEFAULT for the 'subtle' color object within theme() */
     background-image: linear-gradient(to right, theme('colors.brand.subtle.DEFAULT') 8%, theme('colors.brand.card') 18%, theme('colors.brand.subtle.DEFAULT') 33%);
     background-size: 2000px 100%;
     animation: shimmer 1.5s linear infinite forwards;
   }
 
-  /* Default Prose Theme for Dark Backgrounds (using @tailwindcss/typography) */
-  .prose {
-     @apply text-brand-foreground;
-  }
+  /* Prose Defaults */
+  .prose { @apply text-brand-foreground; }
   .prose :where(a):not(:where([class~="not-prose"] *)) { @apply text-brand-primary hover:text-brand-primary-hover no-underline hover:underline; }
   .prose :where(strong):not(:where([class~="not-prose"] *)) { @apply text-brand-primary-light; }
   .prose :where(h1,h2,h3,h4,h5,h6):not(:where([class~="not-prose"] *)) { @apply text-brand-heading; }
-  .prose :where(blockquote):not(:where([class~="not-prose"] *)) { @apply border-l-brand-primary text-brand-primary-light; }
-  .prose :where(code):not(:where([class~="not-prose"] *)) { @apply text-brand-primary-light bg-brand-subtle p-1 rounded-sm text-sm; }
-  .prose :where(hr):not(:where([class~="not-prose"] *)) { @apply border-brand-subtle; }
-
-  /* Specific Theme for Prose on Light Backgrounds */
+  
+  /* Prose on Light Defaults */
   .prose-on-light { @apply text-brand-text-dark; }
-  .prose-on-light :where(a):not(:where([class~="not-prose"] *)) { @apply text-brand-primary hover:text-brand-primary-hover; }
-  .prose-on-light :where(strong):not(:where([class~="not-prose"] *)) { @apply text-brand-primary; }
   .prose-on-light :where(h1,h2,h3,h4,h5,h6):not(:where([class~="not-prose"] *)) { @apply text-brand-text-dark; }
-  .prose-on-light :where(blockquote):not(:where([class~="not-prose"] *)) { @apply border-l-brand-primary text-brand-text-dark opacity-80; }
-  .prose-on-light :where(code):not(:where([class~="not-prose"] *)) { @apply text-brand-primary bg-brand-primary/10 p-1 rounded-sm text-sm; }
-  .prose-on-light :where(hr):not(:where([class~="not-prose"] *)) { @apply border-brand-subtle-light; }
 }
 
-/* Slick Carousel Dots */
+/* Slick Carousel Dots & Fixes */
 .slick-dots li button:before { content: none; }
 .slick-dots li { margin: 0 4px !important; width: 10px !important; height: 10px !important; }
 .slick-dots li button div.slick-dot-inactive {
@@ -92,12 +121,7 @@
 .slick-dots li.slick-active button div.slick-dot-inactive {
   background-color: theme('colors.brand.primary.DEFAULT') !important; opacity: 1;
 }
-
-/* Fix for default react-slick arrow pseudo-elements */
-.slick-prev::before,
-.slick-next::before {
-  content: "" !important;
-}
+.slick-prev::before, .slick-next::before { content: "" !important; }
 
 #root, body, html { height: 100%; }
 #root > div { min-height: 100%; @apply bg-brand-background; }

@@ -43,3 +43,16 @@ export const REGISTER_MUTATION = gql`
   }
 `;
 // --- END NEW ---
+
+export const SEND_PASSWORD_RESET_EMAIL_MUTATION = gql`
+  mutation SendPasswordResetEmail($username: String!) {
+    sendPasswordResetEmail(input: {
+      clientMutationId: "forgotPassword",
+      username: $username
+    }) {
+      user {
+        databaseId
+      }
+    }
+  }
+`;
