@@ -246,15 +246,26 @@ export const APPLY_COUPON_MUTATION = gql`
 `;
 
 // RemoveCoupon Mutation
+// export const REMOVE_COUPONS_MUTATION = gql`
+//   mutation RemoveCoupons($codes: [String]) {
+//     removeCoupons(input: { codes: $codes, clientMutationId: "removeCoupons" }) {
+//       cart {
+//         ...CartFragment
+//       }
+//       removed {
+//         __typename
+//         code
+//       }
+//     }
+//   }
+//   ${CART_FRAGMENT}
+// `;
+
 export const REMOVE_COUPONS_MUTATION = gql`
   mutation RemoveCoupons($codes: [String]) {
     removeCoupons(input: { codes: $codes, clientMutationId: "removeCoupons" }) {
       cart {
         ...CartFragment
-      }
-      removed {
-        __typename
-        code
       }
     }
   }
