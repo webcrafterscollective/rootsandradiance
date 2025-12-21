@@ -27,17 +27,16 @@ export const LOGIN_MUTATION = gql`
 export const REGISTER_MUTATION = gql`
   mutation RegisterUser($username: String!, $email: String!, $password: String!) {
     registerUser(input: {
-        clientMutationId: "register", # Unique identifier
+        clientMutationId: "register", 
         username: $username,
         email: $email,
         password: $password
     }) {
         user {
-            id          # GraphQL ID
-            databaseId  # WordPress User ID
+            id          
+            databaseId  
             username
             email
-            # Note: Default registration doesn't return auth tokens
         }
     }
   }
@@ -52,6 +51,7 @@ export const SEND_PASSWORD_RESET_EMAIL_MUTATION = gql`
     }) {
       user {
         databaseId
+        username
       }
     }
   }
