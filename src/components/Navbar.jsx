@@ -188,7 +188,7 @@ const Navbar = () => {
                 
                 {/* Top Bar: Gold Background (brand.primary) with Black Text (brand.textOnPrimary) */}
                 <div className="bg-brand-primary text-brand-textOnPrimary text-xs sm:text-sm py-2 px-4 flex items-center justify-center relative">
-                    <span className='text-center font-medium'>Natural Skincare & Wellness</span>
+                    <span className='text-center font-medium'>Flat 26% OFF New Year Sale | Use Code NEWYEAR26</span>
                 </div>
 
                 {/* Main Nav: White Background with Light Gray Border */}

@@ -21,9 +21,9 @@
     @apply font-semibold text-brand-heading;
   }
 
-  /* Global Links (Light Gold) */
-a:not([class*="button"]) {
-    @apply text-gray-900 hover:text-brand-primary transition-colors duration-200;
+  /* Global Links (Light/White for Dark Backgrounds) */
+  a:not([class*="button"]) {
+    @apply text-brand-foreground hover:text-brand-primary transition-colors duration-200;
   }
 
   hr, .divider {
@@ -49,46 +49,23 @@ a:not([class*="button"]) {
     @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary focus:ring-offset-brand-background;
   }
 
-  /* --- LIGHT SECTION OVERRIDES (Fix for Login/Register Forms) --- */
+  /* --- LIGHT SECTION OVERRIDES --- */
   
-  /* 1. Base Text: Black */
   .on-light-section {
     @apply text-brand-text-dark; 
   }
-
-  /* 2. Inputs on Light: White bg, Black text */
-  .on-light-section input, 
-  .on-light-section select, 
-  .on-light-section textarea {
+  .on-light-section input, .on-light-section select, .on-light-section textarea {
     @apply bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-brand-primary;
   }
-
-  /* 3. Headings on Light: Black (Overrides Global Gold) */
-  .on-light-section h1, 
-  .on-light-section h2, 
-  .on-light-section h3, 
-  .on-light-section h4, 
-  .on-light-section h5, 
-  .on-light-section h6 {
+  .on-light-section h1, .on-light-section h2, .on-light-section h3, .on-light-section h4, .on-light-section h5, .on-light-section h6 {
     @apply text-gray-900; 
   }
-
-  /* 4. Links on Light: Black (Overrides Global Light Gold) */
   .on-light-section a:not([class*="button"]) {
     @apply text-gray-900 hover:text-black font-medium underline decoration-transparent hover:decoration-black transition-all;
   }
-
-  /* 5. Labels on Light: Black */
-  .on-light-section label {
+  .on-light-section label, .on-light-section button {
     @apply text-gray-900;
   }
-
-  /* 6. Buttons on Light: Ensure text is Black on Gold buttons */
-  .on-light-section button {
-    @apply text-gray-900; /* Forces button text to be dark/black */
-  }
-
-  /* --- End Light Section Overrides --- */
 
   /* Shimmer Animation */
   @keyframes shimmer {
@@ -106,10 +83,14 @@ a:not([class*="button"]) {
   .prose :where(a):not(:where([class~="not-prose"] *)) { @apply text-brand-primary hover:text-brand-primary-hover no-underline hover:underline; }
   .prose :where(strong):not(:where([class~="not-prose"] *)) { @apply text-brand-primary-light; }
   .prose :where(h1,h2,h3,h4,h5,h6):not(:where([class~="not-prose"] *)) { @apply text-brand-heading; }
-  
-  /* Prose on Light Defaults */
   .prose-on-light { @apply text-brand-text-dark; }
   .prose-on-light :where(h1,h2,h3,h4,h5,h6):not(:where([class~="not-prose"] *)) { @apply text-brand-text-dark; }
+}
+
+/* --- SPECIAL PROVISION: Navbar Visibility --- */
+/* This ensures all links inside the Header/Navbar are Black (visible on white) */
+header a:not([class*="button"]) {
+    @apply text-black hover:text-brand-primary;
 }
 
 /* Slick Carousel Dots & Fixes */
@@ -123,6 +104,20 @@ a:not([class*="button"]) {
   background-color: theme('colors.brand.primary.DEFAULT') !important; opacity: 1;
 }
 .slick-prev::before, .slick-next::before { content: "" !important; }
+
+/* Fix for WooCommerce Price Display: Hide screen reader text */
+.screen-reader-text {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal !important;
+}
 
 #root, body, html { height: 100%; }
 #root > div { min-height: 100%; @apply bg-brand-background; }

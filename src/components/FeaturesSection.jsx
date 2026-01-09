@@ -110,7 +110,7 @@ const FeaturesSection = () => {
         </h2>
         {/* Sub-heading: Using brand-foreground (light grey/off-white) with slight opacity for softness */}
         <p className="text-sm md:text-base text-brand-foreground opacity-80 max-w-2xl mx-auto mb-12 md:mb-16">
-          Embrace Minimalist, where each element is chosen for its scientific merit; offering you authentic, effective skincare solutions.
+          Embrace Roots and Radiance, where every ingredient is carefully selected for its scientific merit, delivering authentic and effective skincare solutions.
         </p>
 
         {/* Features Grid */}
